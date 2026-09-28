@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>İngilizce Kelime Testi</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        input {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+        body { 
+            background-color: #f4f6f9; 
+            display: flex; 
+            justify-content: center; 
+            padding: 12px; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            width: 100%; 
+            max-width: 480px; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .nav-buttons { display: flex; gap: 8px; margin-bottom: 20px; }
+        .nav-buttons button { 
+            flex: 1; 
+            padding: 14px 6px; 
+            border: none; 
+            border-radius: 10px; 
+            background: #e9ecef; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: #495057; 
+            font-size: 15px; 
+            touch-action: manipulation;
+        }
+        .nav-buttons button.active { background: #4a6cf7; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .quiz-container { text-align: center; }
+        .word-card { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 14px; padding: 20px 15px; margin-bottom: 16px; }
+        .word-label { font-size: 12px; color: #6c757d; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; }
+        .word-display { font-size: 28px; font-weight: 800; color: #2b303a; word-break: break-word; }
+        
+        .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .option-btn { 
+            padding: 18px; 
+            border: 2px solid #e9ecef; 
+            background: #ffffff; 
+            border-radius: 12px; 
+            font-size: 17px; 
+            font-weight: 600; 
+            color: #333; 
+            cursor: pointer; 
+            text-align: center; 
+            width: 100%; 
+            touch-action: manipulation;
+        }
+        .option-btn:active { background-color: #e2e6ea; }
+        .option-btn.correct-btn { background-color: #2b8a3e !important; color: white !important; border-color: #2b8a3e !important; }
+        .option-btn.wrong-btn { background-color: #e03131 !important; color: white !important; border-color: #e03131 !important; }
+        
+        .feedback { font-weight: bold; min-height: 24px; font-size: 15px; margin-top: 5px; }
+        .correct { color: #2b8a3e; }
+        .wrong { color: #e03131; }
+
+        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        input { padding: 14px; border: 1px solid #ced4da; border-radius: 10px; font-size: 16px; width: 100%; }
+        .btn { padding: 14px; border: none; border-radius: 10px; background: #2b8a3e; color: white; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; touch-action: manipulation; }
+        .btn-secondary { background: #4a6cf7; padding: 12px; font-size: 14px; margin-top: 5px; }
+        .btn-danger { background: #e03131; padding: 8px 12px; font-size: 13px; border-radius: 8px; width: auto; }
+        ul { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; margin: 0; }
+        li { padding: 12px 5px; border-bottom: 1px solid #f1f3f5; display: flex; justify-content: space-between; align-items: center; }
+        
+        .transfer-box { background: #eef2ff; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #4a6cf7; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="nav-buttons">
+        <button id="btn-quiz-tab" class="active" onclick="switchTab('quiz')">Test Yap</button>
+        <button id="btn-list-tab" onclick="switchTab('list')">Kelimelerim (<span id="count">0</span>)</button>
+    </div>
+
+    <div id="tab-quiz" class="tab-content active">
+        <div class="quiz-container">
+            <div id="quiz-area">
+                <div class="word-card">
+                    <div class="word-label">İngilizce Kelime</div>
+                    <div class="word-display" id="target-word">--</div>
+                </div>
+                <div class="options-list" id="options-container"></div>
+                <div id="feedback" class="feedback"></div>
+            </div>
+            <div id="empty-quiz-msg" style="display:none; color: #6c757d; padding: 20px 0;">
+                Test yapabilmek için <strong>en az 4 kelime</strong> gereklidir.
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-list" class="tab-content">
+        <div class="transfer-box">
+            <strong style="display:block; margin-bottom: 8px; color: #333;">📱 Telefona Kelime Aktarma</strong>
+            <button class="btn btn-secondary" onclick="exportWords()">1. Kelimeleri Dosya Olarak İndir (Yedekle)</button>
+            <label class="btn btn-secondary" style="display:block; text-align:center; margin-top:8px; background:#6c757d;">
+                2. İndirilen Dosyayı Yükle (İçe Aktar)
+                <input type="file" id="import-file" onchange="importWords(event)" style="display:none;" accept=".json">
+            </label>
+        </div>
+
+        <h3 style="margin-top:0; font-size: 16px;">Yeni Kelime Ekle</h3>
+        <div class="input-group">
+            <input type="text" id="eng-input" placeholder="İngilizce">
+            <input type="text" id="tr-input" placeholder="Türkçe Karşılığı">
+            <button class="btn" onclick="addWord()">Listeye Ekle</button>
+        </div>
+        <h3 style="font-size: 16px;">Kayıtlı Kelimeler</h3>
+        <ul id="word-list"></ul>
+    </div>
+</div>
+
+<script>
+    let words = JSON.parse(localStorage.getItem('myWords4ChoiceApp')) || 
+                JSON.parse(localStorage.getItem('myWords')) || [];
+
+    let currentWordIndex = -1;
+    let canAnswer = true;
+
+    function saveWords() {
+        localStorage.setItem('myWords4ChoiceApp', JSON.stringify(words));
+        localStorage.setItem('myWords', JSON.stringify(words));
+        updateWordCount();
+    }
+
+    function updateWordCount() {
+        document.getElementById('count').textContent = words.length;
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.nav-buttons button').forEach(btn => btn.classList.remove('active'));
+
+        if (tabName === 'quiz') {
+            document.getElementById('tab-quiz').classList.add('active');
+            document.getElementById('btn-quiz-tab').classList.add('active');
+            nextQuestion();
+        } else {
+            document.getElementById('tab-list').classList.add('active');
+            document.getElementById('btn-list-tab').classList.add('active');
+            renderWordList();
+        }
+    }
+
+    function addWord() {
+        const engInput = document.getElementById('eng-input');
+        const trInput = document.getElementById('tr-input');
+        const eng = engInput.value.trim();
+        const tr = trInput.value.trim();
+
+        if (!eng || !tr) { alert('Her iki alanı da doldurun!'); return; }
+
+        words.push({ eng, tr });
+        saveWords();
+        engInput.value = ''; trInput.value = '';
+        renderWordList();
+    }
+
+    function deleteWord(index) {
+        words.splice(index, 1);
+        saveWords();
+        renderWordList();
+    }
+
+    function renderWordList() {
+        const listEl = document.getElementById('word-list');
+        listEl.innerHTML = '';
+        words.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span><strong>${item.eng}</strong> - ${item.tr}</span><button class="btn btn-danger" onclick="deleteWord(${index})">Sil</button>`;
+            listEl.appendChild(li);
+        });
+        updateWordCount();
+    }
+
+    function exportWords() {
+        if(words.length === 0) { alert("Aktarılacak kelime yok!"); return; }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(words));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "kelimelerim.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function importWords(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedWords = JSON.parse(e.target.result);
+                if (Array.isArray(importedWords)) {
+                    words = importedWords;
+                    saveWords();
+                    alert(words.length + " adet kelime başarıyla yüklendi!");
+                    switchTab('quiz');
+                }
+            } catch (err) {
+                alert("Geçersiz dosya formatı!");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function generateOptions(correctIndex) {
+        let options = [words[correctIndex].tr];
+        let otherWords = words.filter((_, idx) => idx !== correctIndex);
+        while (options.length < 4 && otherWords.length > 0) {
+            let randomIndex = Math.floor(Math.random() * otherWords.length);
+            let selectedTr = otherWords[randomIndex].tr;
+            if (!options.includes(selectedTr)) options.push(selectedTr);
+            otherWords.splice(randomIndex, 1);
+        }
+        return options.sort(() => Math.random() - 0.5);
+    }
+
+    function nextQuestion() {
+        const quizArea = document.getElementById('quiz-area');
+        const emptyMsg = document.getElementById('empty-quiz-msg');
+        const feedback = document.getElementById('feedback');
+        const optionsContainer = document.getElementById('options-container');
+
+        feedback.textContent = ''; feedback.className = 'feedback'; canAnswer = true;
+
+        if (words.length < 4) {
+            quizArea.style.display = 'none'; emptyMsg.style.display = 'block'; return;
+        }
+
+        quizArea.style.display = 'block'; emptyMsg.style.display = 'none';
+
+        currentWordIndex = Math.floor(Math.random() * words.length);
+        document.getElementById('target-word').textContent = words[currentWordIndex].eng;
+
+        const options = generateOptions(currentWordIndex);
+        optionsContainer.innerHTML = '';
+
+        options.forEach(optionText => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = optionText;
+            
+            // Dokunmatik cihazlarda anında tepki vermesi için doğrudan event listener eklendi
+            const handleSelect = (e) => {
+                e.preventDefault();
+                checkAnswer(optionText, btn);
+            };
+
+            btn.addEventListener('touchend', handleSelect, false);
+            btn.addEventListener('click', (e) => {
+                if (e.detail !== 0) handleSelect(e);
+            });
+
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedOption, selectedBtn) {
+        if (!canAnswer) return;
+        canAnswer = false;
+        const correctAnswer = words[currentWordIndex].tr;
+        const feedback = document.getElementById('feedback');
+        const allButtons = document.querySelectorAll('.option-btn');
+
+        if (selectedOption === correctAnswer) {
+            selectedBtn.classList.add('correct-btn');
+            feedback.textContent = 'Doğru Cevap! 👏';
+            feedback.className = 'feedback correct';
+        } else {
+            selectedBtn.classList.add('wrong-btn');
+            feedback.textContent = `Yanlış! Doğru cevap: ${correctAnswer}`;
+            feedback.className = 'feedback wrong';
+            allButtons.forEach(btn => { if (btn.textContent === correctAnswer) btn.classList.add('correct-btn'); });
+        }
+        setTimeout(nextQuestion, 1400);
+    }
+
+    updateWordCount();
+    nextQuestion();
+</script>
+
+</body>
+</html>
