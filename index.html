@@ -9,15 +9,24 @@
             box-sizing: border-box; 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
         }
-        input { user-select: text !important; -webkit-user-select: text !important; }
         body { background-color: #f4f6f9; display: flex; justify-content: center; padding: 12px; margin: 0; min-height: 100vh; }
         .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 480px; display: flex; flex-direction: column; }
         
         .nav-buttons { display: flex; gap: 8px; margin-bottom: 20px; }
-        .nav-buttons button { flex: 1; padding: 14px 6px; border: none; border-radius: 10px; background: #e9ecef; cursor: pointer; font-weight: bold; color: #495057; font-size: 15px; touch-action: manipulation; }
+        .nav-buttons button { 
+            flex: 1; 
+            padding: 14px 6px; 
+            border: none; 
+            border-radius: 10px; 
+            background: #e9ecef; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: #495057; 
+            font-size: 15px; 
+            outline: none;
+            -webkit-appearance: none;
+        }
         .nav-buttons button.active { background: #4a6cf7; color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
@@ -31,7 +40,7 @@
         .wrong-badge { position: absolute; top: 12px; left: 12px; background: #ffe3e3; color: #e03131; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 12px; display: none; }
         
         .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .option-btn { padding: 18px; border: 2px solid #e9ecef; background: #ffffff; border-radius: 12px; font-size: 17px; font-weight: 600; color: #333; cursor: pointer; text-align: center; width: 100%; touch-action: manipulation; }
+        .option-btn { padding: 18px; border: 2px solid #e9ecef; background: #ffffff; border-radius: 12px; font-size: 17px; font-weight: 600; color: #333; cursor: pointer; text-align: center; width: 100%; }
         .option-btn:active { background-color: #e2e6ea; }
         .option-btn.correct-btn { background-color: #2b8a3e !important; color: white !important; border-color: #2b8a3e !important; }
         .option-btn.wrong-btn { background-color: #e03131 !important; color: white !important; border-color: #e03131 !important; }
@@ -42,10 +51,10 @@
 
         .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         input { padding: 14px; border: 1px solid #ced4da; border-radius: 10px; font-size: 16px; width: 100%; }
-        .btn { padding: 14px; border: none; border-radius: 10px; background: #2b8a3e; color: white; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; touch-action: manipulation; }
-        .btn-secondary { background: #4a6cf7; padding: 12px; font-size: 14px; margin-top: 5px; text-align: center; text-decoration: none; color: white; display: block; }
-        .btn-danger { background: #e03131; padding: 8px 12px; font-size: 13px; border-radius: 8px; width: auto; }
-        ul { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; margin: 0; }
+        .btn { padding: 14px; border: none; border-radius: 10px; background: #2b8a3e; color: white; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
+        .btn-secondary { background: #4a6cf7; padding: 12px; font-size: 14px; margin-top: 5px; text-align: center; text-decoration: none; color: white; display: block; border-radius: 10px; }
+        .btn-danger { background: #e03131; padding: 8px 12px; font-size: 13px; border-radius: 8px; width: auto; color: white; border: none; cursor: pointer; }
+        ul { list-style: none; padding: 0; max-height: 250px; overflow-y: auto; margin: 0; }
         li { padding: 12px 5px; border-bottom: 1px solid #f1f3f5; display: flex; justify-content: space-between; align-items: center; }
         .transfer-box { background: #eef2ff; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #4a6cf7; }
     </style>
@@ -79,8 +88,8 @@
     <div id="tab-list" class="tab-content">
         <div class="transfer-box">
             <strong style="display:block; margin-bottom: 8px; color: #333;">📱 Telefona Kelime Aktarma</strong>
-            <button class="btn btn-secondary" onclick="exportWords()">1. Kelimeleri Dosya Olarak İndir (Yedekle)</button>
-            <label class="btn btn-secondary" style="display:block; text-align:center; margin-top:8px; background:#6c757d;">
+            <button class="btn btn-secondary" onclick="exportWords()" style="border:none; cursor:pointer; width:100%;">1. Kelimeleri Dosya Olarak İndir (Yedekle)</button>
+            <label class="btn btn-secondary" style="display:block; text-align:center; margin-top:8px; background:#6c757d; cursor:pointer;">
                 2. İndirilen Dosyayı Yükle (İçe Aktar)
                 <input type="file" id="import-file" onchange="importWords(event)" style="display:none;" accept=".json,application/json">
             </label>
@@ -119,14 +128,16 @@
     }
 
     function resetAllPools() {
-        questionPool = [...words].sort(() => Math.random() - 0.5);
+        questionPool = shuffleArray([...words]);
         wrongPool = [];
         isWrongReviewMode = false;
     }
 
     function switchTab(tabName) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.nav-buttons button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('tab-quiz').classList.remove('active');
+        document.getElementById('tab-list').classList.remove('active');
+        document.getElementById('btn-quiz-tab').classList.remove('active');
+        document.getElementById('btn-list-tab').classList.remove('active');
 
         if (tabName === 'quiz') {
             document.getElementById('tab-quiz').classList.add('active');
@@ -212,7 +223,114 @@
         reader.readAsText(file);
     }
 
-    // Tam rastgele Karıştırma Algoritması (Fisher-Yates Shuffle)
     function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor
+        let arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function generateOptions(correctAnswer) {
+        let options = [correctAnswer];
+        let otherWords = words.filter(item => item.tr !== correctAnswer);
+        
+        while (options.length < 4 && otherWords.length > 0) {
+            let randomIndex = Math.floor(Math.random() * otherWords.length);
+            let selectedTr = otherWords[randomIndex].tr;
+            if (!options.includes(selectedTr)) options.push(selectedTr);
+            otherWords.splice(randomIndex, 1);
+        }
+        
+        return shuffleArray(options);
+    }
+
+    function nextQuestion() {
+        const quizArea = document.getElementById('quiz-area');
+        const emptyMsg = document.getElementById('empty-quiz-msg');
+        const feedback = document.getElementById('feedback');
+        const optionsContainer = document.getElementById('options-container');
+        const wrongBadge = document.getElementById('wrong-mode-badge');
+
+        feedback.textContent = ''; feedback.className = 'feedback'; canAnswer = true;
+
+        if (words.length < 4) {
+            quizArea.style.display = 'none'; emptyMsg.style.display = 'block'; return;
+        }
+
+        quizArea.style.display = 'block'; emptyMsg.style.display = 'none';
+
+        if (!isWrongReviewMode && questionPool.length === 0) {
+            if (wrongPool.length > 0) {
+                isWrongReviewMode = true;
+                alert(`Tüm kelimeler bitti! Şimdi yanlış yaptığınız ${wrongPool.length} kelimeyi tekrar edeceksiniz.`);
+                questionPool = shuffleArray([...wrongPool]);
+                wrongPool = [];
+            } else {
+                alert("Tebrikler! Tüm kelimeleri eksiksiz ve doğru tamamladınız. Test sıfırlanıyor!");
+                resetAllPools();
+            }
+        } 
+        else if (isWrongReviewMode && questionPool.length === 0) {
+            if (wrongPool.length > 0) {
+                alert(`Yanlış tekrarı bitti. Hâlâ bilemediğiniz ${wrongPool.length} kelime var. Tekrar soruluyor.`);
+                questionPool = shuffleArray([...wrongPool]);
+                wrongPool = [];
+            } else {
+                alert("Mükemmel! Tüm yanlışlarınızı düzelttiniz. Test sıfırlanıp baştan başlıyor!");
+                resetAllPools();
+            }
+        }
+
+        wrongBadge.style.display = isWrongReviewMode ? 'block' : 'none';
+
+        currentWordObj = questionPool.pop();
+
+        document.getElementById('target-word').textContent = currentWordObj.eng;
+        document.getElementById('pool-counter').textContent = `Kalan: ${questionPool.length + 1}`;
+
+        const options = generateOptions(currentWordObj.tr);
+        optionsContainer.innerHTML = '';
+
+        options.forEach(optionText => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = optionText;
+            btn.onclick = () => checkAnswer(optionText, btn);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedOption, selectedBtn) {
+        if (!canAnswer) return;
+        canAnswer = false;
+        const correctAnswer = currentWordObj.tr;
+        const feedback = document.getElementById('feedback');
+        const allButtons = document.querySelectorAll('.option-btn');
+
+        if (selectedOption === correctAnswer) {
+            selectedBtn.classList.add('correct-btn');
+            feedback.textContent = 'Doğru Cevap! 👏';
+            feedback.className = 'feedback correct';
+        } else {
+            selectedBtn.classList.add('wrong-btn');
+            feedback.textContent = `Yanlış! Doğru cevap: ${correctAnswer}`;
+            feedback.className = 'feedback wrong';
+            
+            if (!wrongPool.some(item => item.eng === currentWordObj.eng)) {
+                wrongPool.push(currentWordObj);
+            }
+
+            allButtons.forEach(btn => { if (btn.textContent === correctAnswer) btn.classList.add('correct-btn'); });
+        }
+        setTimeout(nextQuestion, 1400);
+    }
+
+    updateWordCount();
+    resetAllPools();
+    nextQuestion();
+</script>
+
+</body>
+</html>
