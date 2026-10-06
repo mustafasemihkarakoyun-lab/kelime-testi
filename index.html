@@ -10,10 +10,30 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             -webkit-tap-highlight-color: transparent;
         }
-        body { background-color: #f4f6f9; display: flex; justify-content: center; padding: 12px; margin: 0; min-height: 100vh; }
-        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 480px; display: flex; flex-direction: column; }
+        body { 
+            background-color: #f4f6f9; 
+            display: flex; 
+            justify-content: center; 
+            padding: 12px; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            width: 100%; 
+            max-width: 480px; 
+            display: flex; 
+            flex-direction: column; 
+        }
         
-        .nav-buttons { display: flex; gap: 8px; margin-bottom: 20px; }
+        .nav-buttons { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 20px; 
+        }
         .nav-buttons button { 
             flex: 1; 
             padding: 14px 6px; 
@@ -25,22 +45,86 @@
             color: #495057; 
             font-size: 15px; 
             outline: none;
-            -webkit-appearance: none;
+            touch-action: manipulation;
         }
-        .nav-buttons button.active { background: #4a6cf7; color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .nav-buttons button.active { 
+            background: #4a6cf7; 
+            color: white; 
+        }
+        .tab-content { 
+            display: none; 
+        }
+        .tab-content.active { 
+            display: block; 
+        }
         
         .quiz-container { text-align: center; }
-        .word-card { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 14px; padding: 20px 15px; margin-bottom: 16px; position: relative; }
-        .word-label { font-size: 12px; color: #6c757d; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; }
-        .word-display { font-size: 28px; font-weight: 800; color: #2b303a; word-break: break-word; }
+        .word-card { 
+            background: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 14px; 
+            padding: 20px 15px; 
+            margin-bottom: 16px; 
+            position: relative; 
+        }
+        .word-label { 
+            font-size: 12px; 
+            color: #6c757d; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 700; 
+            margin-bottom: 6px; 
+        }
+        .word-display { 
+            font-size: 28px; 
+            font-weight: 800; 
+            color: #2b303a; 
+            word-break: break-word; 
+        }
         
-        .pool-badge { position: absolute; top: 12px; right: 12px; background: #e9ecef; color: #495057; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 12px; }
-        .wrong-badge { position: absolute; top: 12px; left: 12px; background: #ffe3e3; color: #e03131; font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 12px; display: none; }
+        .pool-badge { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            background: #e9ecef; 
+            color: #495057; 
+            font-size: 11px; 
+            font-weight: bold; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+        }
+        .wrong-badge { 
+            position: absolute; 
+            top: 12px; 
+            left: 12px; 
+            background: #ffe3e3; 
+            color: #e03131; 
+            font-size: 11px; 
+            font-weight: bold; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            display: none; 
+        }
         
-        .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .option-btn { padding: 18px; border: 2px solid #e9ecef; background: #ffffff; border-radius: 12px; font-size: 17px; font-weight: 600; color: #333; cursor: pointer; text-align: center; width: 100%; }
+        .options-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+        }
+        .option-btn { 
+            padding: 18px; 
+            border: 2px solid #e9ecef; 
+            background: #ffffff; 
+            border-radius: 12px; 
+            font-size: 17px; 
+            font-weight: 600; 
+            color: #333; 
+            cursor: pointer; 
+            text-align: center; 
+            width: 100%; 
+            touch-action: manipulation;
+        }
         .option-btn:active { background-color: #e2e6ea; }
         .option-btn.correct-btn { background-color: #2b8a3e !important; color: white !important; border-color: #2b8a3e !important; }
         .option-btn.wrong-btn { background-color: #e03131 !important; color: white !important; border-color: #e03131 !important; }
@@ -50,28 +134,87 @@
         .wrong { color: #e03131; }
 
         .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        input { padding: 14px; border: 1px solid #ced4da; border-radius: 10px; font-size: 16px; width: 100%; }
-        .btn { padding: 14px; border: none; border-radius: 10px; background: #2b8a3e; color: white; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
-        .btn-secondary { background: #4a6cf7; padding: 12px; font-size: 14px; margin-top: 5px; text-align: center; text-decoration: none; color: white; display: block; border-radius: 10px; }
-        .btn-danger { background: #e03131; padding: 8px 12px; font-size: 13px; border-radius: 8px; width: auto; color: white; border: none; cursor: pointer; }
-        ul { list-style: none; padding: 0; max-height: 250px; overflow-y: auto; margin: 0; }
-        li { padding: 12px 5px; border-bottom: 1px solid #f1f3f5; display: flex; justify-content: space-between; align-items: center; }
-        .transfer-box { background: #eef2ff; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #4a6cf7; }
+        input { 
+            padding: 14px; 
+            border: 1px solid #ced4da; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            width: 100%; 
+            background: #fff;
+            color: #333;
+        }
+        .btn { 
+            padding: 14px; 
+            border: none; 
+            border-radius: 10px; 
+            background: #2b8a3e; 
+            color: white; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            width: 100%; 
+            touch-action: manipulation;
+        }
+        .btn-secondary { 
+            background: #4a6cf7; 
+            padding: 12px; 
+            font-size: 14px; 
+            margin-top: 5px; 
+            text-align: center; 
+            text-decoration: none; 
+            color: white; 
+            display: block; 
+            border-radius: 10px; 
+            touch-action: manipulation;
+        }
+        .btn-danger { 
+            background: #e03131; 
+            padding: 8px 12px; 
+            font-size: 13px; 
+            border-radius: 8px; 
+            width: auto; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            touch-action: manipulation;
+        }
+        ul { 
+            list-style: none; 
+            padding: 0; 
+            max-height: 250px; 
+            overflow-y: auto; 
+            margin: 0; 
+            -webkit-overflow-scrolling: touch;
+        }
+        li { 
+            padding: 12px 5px; 
+            border-bottom: 1px solid #f1f3f5; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .transfer-box { 
+            background: #eef2ff; 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            border: 1px dashed #4a6cf7; 
+        }
     </style>
 </head>
 <body>
 
 <div class="card">
     <div class="nav-buttons">
-        <button id="btn-quiz-tab" class="active" onclick="switchTab('quiz')">Test Yap</button>
-        <button id="btn-list-tab" onclick="switchTab('list')">Kelimelerim (<span id="count">0</span>)</button>
+        <button id="btn-quiz-tab" class="active">Test Yap</button>
+        <button id="btn-list-tab">Kelimelerim (<span id="count">0</span>)</button>
     </div>
 
     <div id="tab-quiz" class="tab-content active">
         <div class="quiz-container">
             <div id="quiz-area">
                 <div class="word-card">
-                    <span class="wrong-badge" id="wrong-mode-badge">⚠️ Yanlış Tekrarı</span>
+                    <span class="wrong-badge" id="wrong-mode-badge">⚠️️ Yanlış Tekrarı</span>
                     <span class="pool-badge" id="pool-counter">Kalan: 0</span>
                     <div class="word-label">İngilizce Kelime</div>
                     <div class="word-display" id="target-word">--</div>
@@ -88,10 +231,10 @@
     <div id="tab-list" class="tab-content">
         <div class="transfer-box">
             <strong style="display:block; margin-bottom: 8px; color: #333;">📱 Telefona Kelime Aktarma</strong>
-            <button class="btn btn-secondary" onclick="exportWords()" style="border:none; cursor:pointer; width:100%;">1. Kelimeleri Dosya Olarak İndir (Yedekle)</button>
+            <button class="btn btn-secondary" id="btn-export" style="border:none; cursor:pointer; width:100%;">1. Kelimeleri Dosya Olarak İndir (Yedekle)</button>
             <label class="btn btn-secondary" style="display:block; text-align:center; margin-top:8px; background:#6c757d; cursor:pointer;">
                 2. İndirilen Dosyayı Yükle (İçe Aktar)
-                <input type="file" id="import-file" onchange="importWords(event)" style="display:none;" accept=".json,application/json">
+                <input type="file" id="import-file" style="display:none;" accept=".json,application/json">
             </label>
         </div>
 
@@ -99,7 +242,7 @@
         <div class="input-group">
             <input type="text" id="eng-input" placeholder="İngilizce">
             <input type="text" id="tr-input" placeholder="Türkçe Karşılığı">
-            <button class="btn" onclick="addWord()">Listeye Ekle</button>
+            <button class="btn" id="btn-add-word">Listeye Ekle</button>
         </div>
         <h3 style="font-size: 16px;">Kayıtlı Kelimeler</h3>
         <ul id="word-list"></ul>
@@ -131,6 +274,25 @@
         questionPool = shuffleArray([...words]);
         wrongPool = [];
         isWrongReviewMode = false;
+    }
+
+    // Tıklama olaylarını hem Touch hem Click desteğiyle dinleme
+    function addFastClick(element, callback) {
+        if (!element) return;
+        let touched = false;
+        
+        element.addEventListener('touchend', function(e) {
+            touched = true;
+            e.preventDefault();
+            callback(e);
+        }, false);
+
+        element.addEventListener('click', function(e) {
+            if (!touched) {
+                callback(e);
+            }
+            touched = false;
+        }, false);
     }
 
     function switchTab(tabName) {
@@ -175,7 +337,16 @@
         listEl.innerHTML = '';
         words.forEach((item, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `<span><strong>${item.eng}</strong> - ${item.tr}</span><button class="btn btn-danger" onclick="deleteWord(${index})">Sil</button>`;
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-danger';
+            deleteBtn.textContent = 'Sil';
+            
+            addFastClick(deleteBtn, function() {
+                deleteWord(index);
+            });
+
+            li.innerHTML = `<span><strong>${item.eng}</strong> - ${item.tr}</span>`;
+            li.appendChild(deleteBtn);
             listEl.appendChild(li);
         });
         updateWordCount();
@@ -297,7 +468,11 @@
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.textContent = optionText;
-            btn.onclick = () => checkAnswer(optionText, btn);
+            
+            addFastClick(btn, function() {
+                checkAnswer(optionText, btn);
+            });
+
             optionsContainer.appendChild(btn);
         });
     }
@@ -326,6 +501,14 @@
         }
         setTimeout(nextQuestion, 1400);
     }
+
+    // Dinleyicileri (Listener) bağlama
+    addFastClick(document.getElementById('btn-quiz-tab'), function() { switchTab('quiz'); });
+    addFastClick(document.getElementById('btn-list-tab'), function() { switchTab('list'); });
+    addFastClick(document.getElementById('btn-add-word'), addWord);
+    addFastClick(document.getElementById('btn-export'), exportWords);
+    
+    document.getElementById('import-file').addEventListener('change', importWords, false);
 
     updateWordCount();
     resetAllPools();
