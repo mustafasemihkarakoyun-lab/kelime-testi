@@ -16,38 +16,6 @@
         body { background-color: #f4f6f9; display: flex; justify-content: center; padding: 12px; margin: 0; min-height: 100vh; }
         .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 480px; display: flex; flex-direction: column; }
         
-        .spotify-card {
-            background: #121212;
-            color: white;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .spotify-user-info { display: flex; align-items: center; gap: 12px; }
-        .spotify-avatar { width: 38px; height: 38px; border-radius: 50%; background: #282828; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .spotify-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .spotify-details { display: flex; flex-direction: column; }
-        .spotify-name { font-size: 14px; font-weight: bold; color: #fff; }
-        .spotify-status { font-size: 11px; color: #1ed760; display: flex; align-items: center; gap: 4px; }
-        .btn-spotify {
-            background: #1ed760;
-            color: #000;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-        .btn-spotify:active { opacity: 0.8; }
-
         .nav-buttons { display: flex; gap: 8px; margin-bottom: 20px; }
         .nav-buttons button { flex: 1; padding: 14px 6px; border: none; border-radius: 10px; background: #e9ecef; cursor: pointer; font-weight: bold; color: #495057; font-size: 15px; touch-action: manipulation; }
         .nav-buttons button.active { background: #4a6cf7; color: white; }
@@ -85,19 +53,6 @@
 <body>
 
 <div class="card">
-    <div class="spotify-card">
-        <div class="spotify-user-info">
-            <div class="spotify-avatar" id="sp-avatar">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141 C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.18-.1.2-1.38-.42-.6-.18-.12-.78.12-1.38.6 4.26-1.32 11.28-1.08 15.72 1.56.54.18.72.78.54 1.2-.18.54-.78.72-1.26.54z"/></svg>
-            </div>
-            <div class="spotify-details">
-                <span class="spotify-name" id="sp-name">Spotify Müzik</span>
-                <span class="spotify-status" id="sp-status">Giriş Yapılmadı</span>
-            </div>
-        </div>
-        <button class="btn-spotify" id="sp-login-btn" onclick="loginSpotify()">Giriş Yap</button>
-    </div>
-
     <div class="nav-buttons">
         <button id="btn-quiz-tab" class="active" onclick="switchTab('quiz')">Test Yap</button>
         <button id="btn-list-tab" onclick="switchTab('list')">Kelimelerim (<span id="count">0</span>)</button>
@@ -143,42 +98,6 @@
 </div>
 
 <script>
-    const SPOTIFY_CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID'; 
-    const REDIRECT_URI = window.location.href.split('#')[0];
-
-    function loginSpotify() {
-        if (SPOTIFY_CLIENT_ID === 'YOUR_SPOTIFY_CLIENT_ID') {
-            alert("Spotify girişi için önceden Spotify Developer panelinden Client ID alıp koda eklemeniz gerekmektedir.");
-            return;
-        }
-        const scope = 'user-read-private user-read-email';
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${SPOTIFY_CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(scope)}`;
-        window.location.href = authUrl;
-    }
-
-    function checkSpotifyToken() {
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const accessToken = params.get('access_token');
-
-        if (accessToken) {
-            fetch('https://api.spotify.com/v1/me', {
-                headers: { 'Authorization': 'Bearer ' + accessToken }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.display_name) {
-                    document.getElementById('sp-name').textContent = data.display_name;
-                    document.getElementById('sp-status').textContent = '● Bağlandı';
-                    document.getElementById('sp-login-btn').style.display = 'none';
-                    if (data.images && data.images.length > 0) {
-                        document.getElementById('sp-avatar').innerHTML = `<img src="${data.images[0].url}" alt="Profil">`;
-                    }
-                }
-            });
-        }
-    }
-
     let words = JSON.parse(localStorage.getItem('myWords4ChoiceApp')) || 
                 JSON.parse(localStorage.getItem('myWords')) || [];
 
@@ -251,7 +170,6 @@
         updateWordCount();
     }
 
-    /* iOS SAFARI UYUMLU İNDİRME FONKSİYONU */
     function exportWords() {
         if(words.length === 0) { alert("Aktarılacak kelime yok!"); return; }
         
@@ -271,7 +189,6 @@
         }, 100);
     }
 
-    /* iOS SAFARI UYUMLU İÇE AKTARMA FONKSİYONU */
     function importWords(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -401,7 +318,6 @@
 
     updateWordCount();
     resetAllPools();
-    checkSpotifyToken();
     nextQuestion();
 </script>
 
