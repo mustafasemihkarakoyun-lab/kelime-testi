@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -144,6 +143,11 @@
             background: #fff;
             color: #333;
         }
+        .search-input {
+            border: 2px solid #4a6cf7;
+            background: #f8f9ff;
+            margin-bottom: 12px;
+        }
         .btn { 
             padding: 14px; 
             border: none; 
@@ -209,7 +213,6 @@
             align-items: center;
         }
 
-        /* ÇEVİRİ SEKMESİ STİLLERİ */
         .translate-card {
             background: #f8f9fa;
             border: 1px solid #e9ecef;
@@ -300,6 +303,9 @@
         </div>
 
         <h3 style="font-size: 16px; margin-bottom: 8px;">Kayıtlı Kelimeler (Alfabetik)</h3>
+        <!-- ARAMA ÇUBUĞU (YENİ) -->
+        <input type="text" id="search-input" class="search-input" placeholder="🔍 Kelime ara (İngilizce veya Türkçe)...">
+        
         <div class="grouped-list" id="grouped-word-list"></div>
     </div>
 
@@ -362,7 +368,6 @@
         }, false);
     }
 
-    /* SEKMELER ARASI GEÇİŞ */
     function switchTab(tabName) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-buttons button').forEach(el => el.classList.remove('active'));
@@ -402,8 +407,10 @@
         renderWordList();
     }
 
+    /* ARAMA VE ALFABETİK LİSTELEME */
     function renderWordList() {
         const containerEl = document.getElementById('grouped-word-list');
+        const searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
         containerEl.innerHTML = '';
 
         if (words.length === 0) {
@@ -412,7 +419,18 @@
             return;
         }
 
-        let sortedWords = [...words].sort((a, b) => a.eng.localeCompare(b.eng, 'en', { sensitivity: 'base' }));
+        // Arama filtresi uygula (Hem İngilizce hem Türkçe içinde arar)
+        let filteredWords = words.filter(item => 
+            item.eng.toLowerCase().includes(searchQuery) || 
+            item.tr.toLowerCase().includes(searchQuery)
+        );
+
+        if (filteredWords.length === 0) {
+            containerEl.innerHTML = '<div style="color:#6c757d; padding:10px; text-align:center;">Aranan kelime bulunamadı.</div>';
+            return;
+        }
+
+        let sortedWords = [...filteredWords].sort((a, b) => a.eng.localeCompare(b.eng, 'en', { sensitivity: 'base' }));
 
         let groups = {};
         sortedWords.forEach(item => {
@@ -648,6 +666,8 @@
     addFastClick(document.getElementById('btn-export'), exportWords);
     addFastClick(document.getElementById('btn-translate'), translateWord);
     
+    // ARAMA DİNLEYİCİSİ (Anlık canlı filtreleme)
+    document.getElementById('search-input').addEventListener('input', renderWordList, false);
     document.getElementById('import-file').addEventListener('change', importWords, false);
 
     updateWordCount();
@@ -657,3 +677,4 @@
 
 </body>
 </html>
+
