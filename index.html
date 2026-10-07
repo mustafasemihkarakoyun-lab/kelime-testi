@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -31,19 +32,19 @@
         
         .nav-buttons { 
             display: flex; 
-            gap: 8px; 
+            gap: 6px; 
             margin-bottom: 20px; 
         }
         .nav-buttons button { 
             flex: 1; 
-            padding: 14px 6px; 
+            padding: 12px 4px; 
             border: none; 
             border-radius: 10px; 
             background: #e9ecef; 
             cursor: pointer; 
             font-weight: bold; 
             color: #495057; 
-            font-size: 15px; 
+            font-size: 14px; 
             outline: none;
             touch-action: manipulation;
         }
@@ -133,7 +134,7 @@
         .correct { color: #2b8a3e; }
         .wrong { color: #e03131; }
 
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         input { 
             padding: 14px; 
             border: 1px solid #ced4da; 
@@ -169,30 +170,80 @@
         }
         .btn-danger { 
             background: #e03131; 
-            padding: 8px 12px; 
-            font-size: 13px; 
-            border-radius: 8px; 
+            padding: 6px 10px; 
+            font-size: 12px; 
+            border-radius: 6px; 
             width: auto; 
             color: white; 
             border: none; 
             cursor: pointer; 
             touch-action: manipulation;
         }
-        ul { 
-            list-style: none; 
-            padding: 0; 
-            max-height: 250px; 
-            overflow-y: auto; 
-            margin: 0; 
+        
+        .grouped-list {
+            max-height: 350px;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding-right: 5px;
         }
-        li { 
-            padding: 12px 5px; 
-            border-bottom: 1px solid #f1f3f5; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+        .group-header {
+            background: #eef2ff;
+            color: #4a6cf7;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            margin-bottom: 6px;
         }
+        .grouped-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .grouped-list li {
+            padding: 10px 5px;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ÇEVİRİ SEKMESİ STİLLERİ */
+        .translate-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .btn-translate {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            touch-action: manipulation;
+        }
+        .translate-result-box {
+            margin-top: 16px;
+            padding: 14px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
         .transfer-box { 
             background: #eef2ff; 
             padding: 15px; 
@@ -208,13 +259,15 @@
     <div class="nav-buttons">
         <button id="btn-quiz-tab" class="active">Test Yap</button>
         <button id="btn-list-tab">Kelimelerim (<span id="count">0</span>)</button>
+        <button id="btn-translate-tab">🌐 Çeviri</button>
     </div>
 
+    <!-- SEKME 1: TEST YAP -->
     <div id="tab-quiz" class="tab-content active">
         <div class="quiz-container">
             <div id="quiz-area">
                 <div class="word-card">
-                    <span class="wrong-badge" id="wrong-mode-badge">⚠️️ Yanlış Tekrarı</span>
+                    <span class="wrong-badge" id="wrong-mode-badge">⚠️ Yanlış Tekrarı</span>
                     <span class="pool-badge" id="pool-counter">Kalan: 0</span>
                     <div class="word-label">İngilizce Kelime</div>
                     <div class="word-display" id="target-word">--</div>
@@ -228,6 +281,7 @@
         </div>
     </div>
 
+    <!-- SEKME 2: KELİMELERİM -->
     <div id="tab-list" class="tab-content">
         <div class="transfer-box">
             <strong style="display:block; margin-bottom: 8px; color: #333;">📱 Telefona Kelime Aktarma</strong>
@@ -240,12 +294,26 @@
 
         <h3 style="margin-top:0; font-size: 16px;">Yeni Kelime Ekle</h3>
         <div class="input-group">
-            <input type="text" id="eng-input" placeholder="İngilizce">
-            <input type="text" id="tr-input" placeholder="Türkçe Karşılığı">
+            <input type="text" id="eng-input" placeholder="İngilizce (Örn: Apple)">
+            <input type="text" id="tr-input" placeholder="Türkçe Karşılığı (Örn: Elma)">
             <button class="btn" id="btn-add-word">Listeye Ekle</button>
         </div>
-        <h3 style="font-size: 16px;">Kayıtlı Kelimeler</h3>
-        <ul id="word-list"></ul>
+
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Kayıtlı Kelimeler (Alfabetik)</h3>
+        <div class="grouped-list" id="grouped-word-list"></div>
+    </div>
+
+    <!-- SEKME 3: GOOGLE ÇEVİRİ -->
+    <div id="tab-translate" class="tab-content">
+        <div class="translate-card">
+            <h3 style="margin-top:0; font-size: 16px; color:#2b303a;">Google Çeviri</h3>
+            <input type="text" id="trans-input" placeholder="İngilizce kelime yazın...">
+            <button class="btn-translate" id="btn-translate">İngilizce ➔ Türkçe Çevir</button>
+            
+            <div class="translate-result-box" id="translate-result-box">
+                <span style="color:#6c757d; font-size:14px;">Çevirmek istediğiniz kelimeyi yazın.</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -276,7 +344,6 @@
         isWrongReviewMode = false;
     }
 
-    // Tıklama olaylarını hem Touch hem Click desteğiyle dinleme
     function addFastClick(element, callback) {
         if (!element) return;
         let touched = false;
@@ -295,20 +362,22 @@
         }, false);
     }
 
+    /* SEKMELER ARASI GEÇİŞ */
     function switchTab(tabName) {
-        document.getElementById('tab-quiz').classList.remove('active');
-        document.getElementById('tab-list').classList.remove('active');
-        document.getElementById('btn-quiz-tab').classList.remove('active');
-        document.getElementById('btn-list-tab').classList.remove('active');
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-buttons button').forEach(el => el.classList.remove('active'));
 
         if (tabName === 'quiz') {
             document.getElementById('tab-quiz').classList.add('active');
             document.getElementById('btn-quiz-tab').classList.add('active');
             nextQuestion();
-        } else {
+        } else if (tabName === 'list') {
             document.getElementById('tab-list').classList.add('active');
             document.getElementById('btn-list-tab').classList.add('active');
             renderWordList();
+        } else if (tabName === 'translate') {
+            document.getElementById('tab-translate').classList.add('active');
+            document.getElementById('btn-translate-tab').classList.add('active');
         }
     }
 
@@ -324,32 +393,100 @@
         saveWords();
         engInput.value = ''; trInput.value = '';
         renderWordList();
+        alert(`"${eng}" kelimesi listenize eklendi!`);
     }
 
-    function deleteWord(index) {
-        words.splice(index, 1);
+    function deleteWordByEng(engWord) {
+        words = words.filter(item => item.eng.toLowerCase() !== engWord.toLowerCase());
         saveWords();
         renderWordList();
     }
 
     function renderWordList() {
-        const listEl = document.getElementById('word-list');
-        listEl.innerHTML = '';
-        words.forEach((item, index) => {
-            const li = document.createElement('li');
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn btn-danger';
-            deleteBtn.textContent = 'Sil';
-            
-            addFastClick(deleteBtn, function() {
-                deleteWord(index);
-            });
+        const containerEl = document.getElementById('grouped-word-list');
+        containerEl.innerHTML = '';
 
-            li.innerHTML = `<span><strong>${item.eng}</strong> - ${item.tr}</span>`;
-            li.appendChild(deleteBtn);
-            listEl.appendChild(li);
+        if (words.length === 0) {
+            containerEl.innerHTML = '<div style="color:#6c757d; padding:10px; text-align:center;">Henüz kayıtlı kelime yok.</div>';
+            updateWordCount();
+            return;
+        }
+
+        let sortedWords = [...words].sort((a, b) => a.eng.localeCompare(b.eng, 'en', { sensitivity: 'base' }));
+
+        let groups = {};
+        sortedWords.forEach(item => {
+            let firstLetter = item.eng.charAt(0).toUpperCase();
+            if (!/[A-Z]/.test(firstLetter)) firstLetter = '#';
+            if (!groups[firstLetter]) groups[firstLetter] = [];
+            groups[firstLetter].push(item);
         });
+
+        Object.keys(groups).sort().forEach(letter => {
+            const groupHeader = document.createElement('div');
+            groupHeader.className = 'group-header';
+            groupHeader.textContent = letter;
+            containerEl.appendChild(groupHeader);
+
+            const ul = document.createElement('ul');
+            groups[letter].forEach(item => {
+                const li = document.createElement('li');
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger';
+                deleteBtn.textContent = 'Sil';
+                
+                addFastClick(deleteBtn, function() {
+                    deleteWordByEng(item.eng);
+                });
+
+                li.innerHTML = `<span><strong>${item.eng}</strong> - ${item.tr}</span>`;
+                li.appendChild(deleteBtn);
+                ul.appendChild(li);
+            });
+            containerEl.appendChild(ul);
+        });
+
         updateWordCount();
+    }
+
+    /* GOOGLE ÇEVİRİ */
+    function translateWord() {
+        const input = document.getElementById('trans-input');
+        const resultBox = document.getElementById('translate-result-box');
+        const text = input.value.trim();
+
+        if (!text) {
+            resultBox.innerHTML = '<span style="color:#e03131;">Lütfen bir kelime yazın.</span>';
+            return;
+        }
+
+        resultBox.innerHTML = '<span style="color:#4a6cf7;">Çevriliyor...</span>';
+
+        fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=${encodeURIComponent(text)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data[0] && data[0][0]) {
+                    const translatedText = data[0][0][0];
+                    resultBox.innerHTML = `
+                        <div style="font-size:18px; font-weight:bold; color:#2b303a;">${text} = <span style="color:#2b8a3e;">${translatedText}</span></div>
+                        <button class="btn" id="btn-use-translation" style="margin-top:6px; padding:10px; font-size:14px;">Listeye Aktar ve Ekle</button>
+                    `;
+
+                    setTimeout(() => {
+                        const useBtn = document.getElementById('btn-use-translation');
+                        if (useBtn) {
+                            addFastClick(useBtn, function() {
+                                document.getElementById('eng-input').value = text;
+                                document.getElementById('tr-input').value = translatedText;
+                                switchTab('list');
+                            });
+                        }
+                    }, 50);
+                }
+            })
+            .catch(() => {
+                resultBox.innerHTML = '<span style="color:#e03131;">Çeviri yapılamadı. Bağlantınızı kontrol edin.</span>';
+            });
     }
 
     function exportWords() {
@@ -502,11 +639,14 @@
         setTimeout(nextQuestion, 1400);
     }
 
-    // Dinleyicileri (Listener) bağlama
+    /* DINLEYICILER */
     addFastClick(document.getElementById('btn-quiz-tab'), function() { switchTab('quiz'); });
     addFastClick(document.getElementById('btn-list-tab'), function() { switchTab('list'); });
+    addFastClick(document.getElementById('btn-translate-tab'), function() { switchTab('translate'); });
+    
     addFastClick(document.getElementById('btn-add-word'), addWord);
     addFastClick(document.getElementById('btn-export'), exportWords);
+    addFastClick(document.getElementById('btn-translate'), translateWord);
     
     document.getElementById('import-file').addEventListener('change', importWords, false);
 
